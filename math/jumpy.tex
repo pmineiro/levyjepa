@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xspace}
+
+\newcommand{\epps}{Epps-Pulley\xspace}
+\newcommand{\levy}{L\'{e}vy\xspace}
+\newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}
+\DeclareMathOperator{\laplace}{Laplace}
+\DeclareMathOperator{\ep}{EP}
+\DeclareMathOperator{\Exp}{Exp}
+\DeclareMathOperator{\VG}{VG}
+\DeclareMathOperator{\InvGamma}{IG}
+
+\title{jumpy}
+\author{pmineiro}
+\date{November 2025}
+
+\begin{document}
+
+\section{Image Embedding Regularizer}
+
+We will regularize our image embeddings by penalizing the mismatch between the empirical distribution of embedding increments across an image and a target distribution. Intuitively, we want our target distribution to model locally smooth changes punctuated by occasional discontinuities, while remaining analytically and computationally tractable.  Therefore we choose a \levy sheet with Gaussian and jump components.  
+
+\subsection{\levy sheet definition}
+This is a process $Z: \R_+^2 \to \R^d$ which can be decomposed as 
+\begin{align*}
+Z(x, y) &= \sigma W(x, y) + J(x, y),
+\end{align*}
+where $W(x, y)$ is a standard Brownian sheet, $\sigma \geq 0$, and $J(x, y)$ is a pure-jump finite-activity \levy sheet with independent increments over rectangles.  The jump component is specified by a spherically symmetric \levy measure $\mu$ on jump sizes with density
+\begin{align*}
+\frac{d\mu}{dz}(z) &= \lambda \int_0^\infty (2 \pi \tau)^{-d/2} \exp\left(-\frac{\|z\|^2}{2 \tau}\right) \rho(d \tau),
+\end{align*}
+with finite intensity $0 < \lambda < \infty$ and probability measure $\rho$ on the random variance $\tau$, corresponding to generating a (zero-mean) jump size $\gamma = \sqrt{\tau} v$ by sampling $\tau \sim \rho$ and $v \sim N(0, I_d)$. These choices ensure $Z(x, y)$ is isotropic, i.e., $\{ Q Z(x, y) : (x, y) \in \R_+^2 \} \overset{d}{=} \{ Z(x, y) : (x, y) \in \R_+^2 \}$ for any orthogonal matrix $Q \in O(d)$.  
+
+\subsection{Characteristic Function}\label{subsec:character}
+
+If $Z$ is observed on a regular square integral grid of side length $s$, a discrete second difference is
+\begin{align*}
+\Delta Z(x, y) &= Z(x,y) - Z(x,y-1) - Z(x-1,y) + Z(x-1,y-1), \\
+\end{align*}
+with $Z(x, y) \doteq 0$ whenever $x \leq 0$ or $y \leq 0$.  Using convolution notation,
+\begin{align}
+\Delta Z &= \begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix} \star Z.
+\label{eqn:axisalignedkernel}
+\end{align}
+These $\Delta Z$ are independent and each has the same infinitely-divisible law with characteristic function
+\begin{align*}
+\phi(u) &= \mathbb{E}\left[ e^{i u^\top \Delta Z} \right], \\
+&= \exp\left[ \left( -\frac{\sigma^2}{2} \|u\|^2 + \lambda \int_0^\infty \left( e^{-\frac{\tau}{2} \|u\|^2} - 1 \right) \rho(d\tau) \right) \right].
+\end{align*}
+The empirical characteristic function of observed increments is 
+\begin{align*}
+\hat{\phi}(u) &= \frac{1}{s^2} \sum_{x=1}^s \sum_{y=1}^s \exp\left(i u^\top \Delta Z(x, y)\right).
+\end{align*}
+More generally, if the increments are computed over disjoint cells of area $\epsilon^2$, the log characteristic function is scaled by $\epsilon^2$.
+
+\subsection{\epps based regularizer}
+
+Our regularizer will be based upon the \epps statistic for embedding differences across a single image, based upon the independent increments and characteristic function from above. The \epps statistic can be defined and computed for an $\R^{d}$ valued \levy sheet, but it is unwieldy computationally, so we will reduce to $\R$.  Let $v \in S^{d-1}$ be any given unit-norm vector, then
+\begin{align*}
+\phi_v(u) &= \mathbb{E}\left[e^{i u v^\top \Delta Z}\right] \\
+&= \exp \left( -\frac{\sigma^2}{2} u^2 + \lambda \left( \mathbb{E}_{\rho}\left[e^{-\frac{\tau}{2} u^2} \right] - 1 \right) \right),
+\end{align*}
+where \cref{tab:projectcf} contains $\mathbb{E}_{\rho}\left[e^{-\frac{\tau}{2}u^2}\right]$ in closed-form for some choices of $\rho$.
+Assuming $Z$ is observed on regular square integral grid of side length $s$, the \epps statistic on the projected increments is
+\begin{align*}
+\ep &= s^2 \int_{-\infty}^{\infty} \left| \hat{\phi}_v(u) - \phi_v(u) \right|^2 w(u) du, \\
+\hat{\phi}_v(u) &= \frac{1}{s^2} \sum_{x=1}^s \sum_{y=1}^s e^{i u v^\top \Delta Z(x, y)},
+\end{align*}
+where $w(u)$ is a symmetric non-negative function with $\int_{-\infty}^{\infty} w(u) du < \infty$.
+
+\begin{table}
+\centering
+\renewcommand{\arraystretch}{1.4} % a bit more space
+\begin{tabular}{c c c}
+\toprule
+$\rho$ & $\mathbb{E}_{\rho}\left[e^{-\frac{\tau}{2}u^2}\right]$ & \textbf{Notes} \\
+\midrule
+$\displaystyle
+\Exp\!\left(\frac{\alpha^2}{2}\right)
+$
+&
+$\displaystyle
+\frac{\alpha^2}{\alpha^2 + u^2}
+$
+& Laplace
+\\
+\midrule
+$\displaystyle
+\Gamma(k, \beta)
+$
+&
+$\displaystyle
+\left(\frac{\beta}{\beta + u^2/2}\right)^k
+$
+& Variance-Gamma
+\\
+\midrule
+$\displaystyle
+\InvGamma\left(\frac{\nu}{2}, \frac{\nu}{2}\right)
+$
+&
+$\displaystyle
+\frac{2 K_{\frac{\nu}{2}}\!\big(\sqrt{\nu}\,|u|\big)}{\Gamma(\tfrac{\nu}{2})}
+\left(\frac{\sqrt{\nu}\,|u|}{2}\right)^{\nu/2}
+
+$
+& $t$ with $\nu$ d.o.f.
+\\
+\bottomrule
+\end{tabular}
+\caption{For certain jump size distributions the contribution to the characteristic function has closed-form.  Both $\Exp(\alpha^2/2)$ and $\Gamma(k, \beta)$ use their respective rate parameterizations.}
+\label{tab:projectcf}
+\end{table}
+
+\subsection{Incorporating other orientations}
+
+The discrete difference operator from \cref{subsec:character} has an orientation, fundamentally due to the Markov property of the \levy sheet over a rectangular filtration: the value $Z(x, y)$ is a sufficient statistic for the entire ``southwest'' rectangle $\{ Z(R) : R \subseteq [0, x] \times [0, y] \}$.  This preferred direction is a mathematical consequence of inducing a partial ordering on the plane and is necessary to define the \levy sheet, but the difference operator might be a poor fit for certain images. We will mitigate this by using multiple \levy sheets with different orientations.
+
+For axis-oriented filtrations, suppose for $(x, y) \in [0,s]^2$, we observe $A(x, y) = Z(s-x, y)$.  Up to a sign, the difference operator acting on $A$ values is the same as the difference operator acting on $Z$ values.  Repeating the argument for $A(x, y) = Z(x,s-y)$ and $A(x, y) = Z(s-x,s-y)$ reveals 
+\begin{align*}
+\Delta A &= \pm \begin{pmatrix} -1 & 1 \\ 1 & -1 \end{pmatrix} \star A.
+\end{align*}
+Since the distribution of $Z$ is sign invariant, this means increments using this one difference operator covers all 4 cases.
+
+For a 45 degree rotated process, suppose for $0 \leq x \leq s$, $0 \leq y \leq s$, we observe $A(x, y) = Z\left(t_0(x, y), t_1(x, y)\right)$ where
+\begin{align}
+\begin{pmatrix} t_0(x, y) \\ t_1(x, y) \end{pmatrix} &= \begin{pmatrix} s \\ 0 \end{pmatrix} + \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & -1 \\ 1 & 1 \end{pmatrix} \left(\begin{array}{c} x \\ y\end{array}\right).
+\label{eqn:rotate}
+\end{align}
+Then $A$ will have a ``southern'' cone filtration.  The resulting discrete difference operator for computing independent increments of $A$ is
+\begin{align}
+\Delta A(x, y) &= A(x-1, y) - A(x, y-1) - A(x, y+1) + A(x+1,y),
+\end{align}
+with $A(x, y) \doteq 0$ for $x \leq 0$, $x > s$, $y \leq 0$, or $y > s$.
+Using convolution notation, 
+\begin{align} 
+\Delta A &= \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 1 \\ 0 & -1 & 0 \end{pmatrix} \star A,
+\label{eqn:diagonalkernel}
+\end{align}
+whose preimage under the inverse 45 degree rotation is an axis-aligned square of area 2. The other diagonal orientations utilize the same difference operator to compute increments up to a sign, therefore, this one difference operator covers all 4 diagonal cases.
+
+We will model our observations $A: [0, s]^2 \to \R^{2 d}$, where the first $d$ observation coordinates are produced by an untransformed \levy sheet and hence use \cref{eqn:axisalignedkernel} to compute increments, and the last $d$ observation components are produced by a rotated \levy sheet as in \cref{eqn:rotate} and hence use \cref{eqn:diagonalkernel} to compute increments.
+
+\end{document}
