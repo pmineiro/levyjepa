@@ -20,7 +20,7 @@ I added a 2D Levy prior[^1] to the final embedding layer of the ViT whose streng
 
 | `gamma`       | test/acc      | Notes  |
 | ------------- |:-------------:| -----:|
-| `gamma=0`     | 0.90726       | LeJepa baseline, no Levy 2D regularizer |
+| `gamma=0`     | 0.90726       | LeJepa baseline (no Levy 2D regularizer) |
 | `gamma=1`     | 0.91287       | ibid with Levy 2D regularizer |
 
 It's a tiny lift.  Honestly less exciting than I hoped.
@@ -32,7 +32,7 @@ to control the strength of the invariance loss, with `kappa=0` corresponding to 
 
 | `gamma`       | test/acc      | Notes  |
 | ------------- |:-------------:| -----:|
-| `gamma=0`     | 0.56943       | LeJepa baseline, no Levy 2D regularizer, no invariance loss |
+| `gamma=0`     | 0.56943       | LeJepa baseline without invariance loss (no Levy 2D regularizer) |
 | `gamma=1`     | 0.59057       | ibid with Levy 2D regularizer | 
 
 That's a larger lift.  This suggests to me the regularizer is helping.
