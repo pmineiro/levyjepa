@@ -27,7 +27,7 @@ It's a tiny lift.  Honestly less exciting than I hoped.
 
 ## Experiment 2: Remove invariance loss
 
-On the hunch that the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md), I created a parameter `kappa`
+On the hunch that the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md) is saturated, I created a parameter `kappa`
 to control the strength of the invariance loss, with `kappa=0` corresponding to no invariance loss.
 
 | `gamma`       | test/acc      | Notes  |
