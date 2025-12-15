@@ -35,7 +35,7 @@ to control the strength of the invariance loss, with `kappa=0` corresponding to 
 | `gamma=0`     | 0.56943       | LeJepa baseline, no Levy 2D regularizer, no invariance loss |
 | `gamma=1`     | 0.59057       | ibid with Levy 2D regularizer | 
 
-That's a larger lift from a weaker baseline.  This suggests to me the regularizer is helping.
+That's a larger lift.  This suggests to me the regularizer is helping.
 
 # Thoughts
 
