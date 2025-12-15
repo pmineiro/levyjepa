@@ -3,7 +3,7 @@
 > I thought a Levy process would make a nice universal prior for video to incorporate the idea of "smooth spatialtemporal evolution punctuated by occassional discrete jumps".
 > tl;dr: on the minimal demo, there is a miniscule but consistent lift, suggesting it might be useful for more complicated applications.
 
-# Roadmap
+# Overview
 
 * A latex document and PDF outlining the technique are in [the math subdirectory](math/).
 * Code to run the experiments below is in [the code subdirectory](code/).
