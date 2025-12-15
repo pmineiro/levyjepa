@@ -21,9 +21,29 @@ I added a 2D Levy prior[^1] to the final embedding layer of the ViT whose streng
 | `gamma`       | test/acc      | Notes  |
 | ------------- |:-------------:| -----:|
 | `gamma=0`     | 0.90726       | LeJepa baseline, no Levy 2D regularizer |
-| `gamma=1`     | 0.91287       | with Levy 2D regularizer |
+| `gamma=1`     | 0.91287       | ibid with Levy 2D regularizer |
 
 It's a tiny lift.  Honestly less exciting than I hoped.
+
+## Experiment 2: Remove invariance loss
+
+On the hunch that the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md), I created a parameter `kappa`
+to control the strength of the invariance loss, with `kappa=0` corresponding to no invariance loss.
+
+| `gamma`       | test/acc      | Notes  |
+| ------------- |:-------------:| -----:|
+| `gamma=0`     | 0.56943       | LeJepa baseline, no Levy 2D regularizer, no invariance loss |
+| `gamma=1`     | 0.59057       | ibid with Levy 2D regularizer | 
+
+That's a larger lift from a weaker baseline.  This suggests to me the regularizer is helping.
+
+# Thoughts
+
+The lifts are tiny but consistent in my experiments, suggesting this is helpful, but not substantially.  
+It could be that whole single image classification doesn't benefit that much a (sub)structural prior,
+and a more complicated problem (image segmentation, video object tracking) might benefit more.
+
+Overall this was a fun distraction and I'll look for the opportunity to exploit "distributional regularization" in other projects.
 
 [^1]: For a video setup, I would use two spatial dimensions and 1 temporal dimension.
 [^2]: With one unavoidable modification to the LeJepa baseline: in order to get the demo to utilize the final embedding layer of the ViT, 
