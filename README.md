@@ -1,0 +1,31 @@
+# LevyJepa
+> Inspired by the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md),
+> I thought a Levy process would make a nice universal prior for video to incorporate the idea of "smooth spatialtemporal evolution punctuated by occassional discrete jumps".
+> tl;dr: on the minimal demo, there is a miniscule but consistent lift, suggesting it might be useful for more complicated applications.
+
+# Roadmap
+
+* A latex document and PDF outlining the technique are in [the math subdirectory](math/).
+* Code to run the experiments below is in [the code subdirectory](code/).
+
+# Experiments
+
+More details (including how to replicate) are in [the code subdirectory](code/README.md).
+
+## Experiment 1: Add Levy Prior
+
+Starting from the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md), 
+I added a 2D Levy prior[^1] to the final embedding layer of the ViT whose strength was controlled by parameter `gamma`:
+`gamma=0` corresponds to the LeJepa baseline.[^2]
+
+| `gamma`       | test/acc      | Notes  |
+| ------------- |:-------------:| -----:|
+| `gamma=0`     | 0.90726       | LeJepa baseline, no Levy 2D regularizer |
+| `gamma=1`     | 0.91287       | with Levy 2D regularizer |
+
+It's a tiny lift.  Honestly less exciting than I hoped.
+
+[^1]: For a video setup, I would use two spatial dimensions and 1 temporal dimension.
+[^2]: With one unavoidable modification to the LeJepa baseline: in order to get the demo to utilize the final embedding layer of the ViT, 
+I had to change the embedding used for prediction from "CLS token" to "attention pooled across the final embedding layer".
+
