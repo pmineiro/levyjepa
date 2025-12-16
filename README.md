@@ -42,7 +42,7 @@ That's a slightly larger lift.  This suggests to me the regularizer is helping.
 
 The lifts are tiny but consistent in my experiments, suggesting this is helpful, but not substantially.  
 It could be that single image classification doesn't benefit much from a (sub)structural prior,
-and a more complicated problem (image segmentation, video object tracking) might benefit more.  Or maybe I have a bug somewhere.
+and a more complicated problem (e.g., image segmentation, video object tracking) might benefit more.  Or maybe I have a bug somewhere.
 
 Overall this was a fun distraction and I'll look for the opportunity to exploit "distributional regularization" in other projects.
 
