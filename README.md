@@ -29,12 +29,12 @@ It's a tiny lift.  Honestly less exciting than I hoped.
 ## Experiment 2: Remove invariance loss
 
 On the hunch that the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md) is saturated, I created a parameter `kappa`
-to control the strength of the invariance loss, with `kappa=0` corresponding to no invariance loss.
+to control the strength of the invariance loss, with `kappa=0` corresponding to no invariance loss.  The settings in experiment 1 correspond to `kappa=1`.
 
 | `gamma`       | test/acc      | Notes  |
 | ------------- |:-------------:| -----:|
-| `gamma=0`, `kappa=0`     | 0.56943       | LeJepa baseline without invariance loss (no Levy 2D regularizer) |
-| `gamma=1`, `kappa=0`     | 0.59057       | ibid with Levy 2D regularizer | 
+| LeJepa baseline without invariance loss (no Levy 2D regularizer) | 0.56943       |  `gamma=0`, `kappa=0` |
+| ibid with Levy 2D regularizer  | 0.59057       | `gamma=1`, `kappa=0`     | 
 
 That's a slightly larger lift.  This suggests to me the regularizer is helping.
 
