@@ -19,10 +19,10 @@ Starting from the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/b
 I added a 2D Levy prior[^1] to the final embedding layer of the ViT whose strength was controlled by parameter `gamma`:
 `gamma=0` corresponds to the LeJepa baseline.[^2]
 
-| `gamma`       | test/acc      | Notes  |
+| What     | test/acc      | Notes  |
 | ------------- |:-------------:| -----:|
-| `gamma=0`     | 0.90726       | LeJepa baseline (no Levy 2D regularizer) |
-| `gamma=1`     | 0.91287       | ibid with Levy 2D regularizer |
+| LeJepa baseline (no Levy 2D regularizer)  | 0.90726       | `gamma=0` |
+| ibid with Levy 2D regularizer    | 0.91287       | `gamma=1` |
 
 It's a tiny lift.  Honestly less exciting than I hoped.
 
