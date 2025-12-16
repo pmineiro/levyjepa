@@ -1,6 +1,7 @@
 # LevyJepa
 > Inspired by the [LeJepa minimal demo](https://github.com/rbalestr-lab/lejepa/blob/main/MINIMAL.md),
 > I thought a Levy process would make a nice universal prior for video to incorporate the idea of "smooth spatialtemporal evolution punctuated by occassional discrete jumps".
+>
 > tl;dr: on the minimal demo, there is a miniscule but consistent lift, suggesting it might be useful for more complicated applications.
 
 # Overview
